@@ -1,4 +1,4 @@
-# **CV Genie ✨**
+# **CV Genie ✨** [Live Demo](https://cvgenie.pages.dev/)
 
 CV Genie is a powerful, AI-driven application that transforms a user's LinkedIn profile data into a professional, ATS-friendly CV tailored for a specific job title. The application is built using a serverless architecture with Cloudflare Workers for the backend and Cloudflare Pages for the frontend.
 
