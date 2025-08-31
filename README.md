@@ -64,15 +64,18 @@ The worker handles all the backend logic, including API calls and PDF generation
    ```
     
 3. **Install Dependencies**:  
+```
    npm install
-
+```
    This will install Hono, the Google Generative AI SDK, Puppeteer, and other required packages from your package.json.  
-4. Authenticate Wrangler:  
+5. Authenticate Wrangler:  
    Log Wrangler into your Cloudflare account.  
-   wrangler login
-
-5. Configure wrangler.toml:  
+```
+    wrangler login
+```
+6. Configure wrangler.toml:  
    Your worker's wrangler.toml file needs a special binding to use the Browser Rendering API. Add the following browser binding.  
+```
    \# wrangler.toml  
    name \= "cv-generator-worker" \# Choose a unique name for your worker  
    main \= "src/index.ts"       \# Adjust path to your main worker file if needed  
@@ -84,12 +87,13 @@ The worker handles all the backend logic, including API calls and PDF generation
    \# Add this section for Puppeteer/Browser Rendering  
    \[\[browser\]\]  
    binding \= "MY\_BROWSER"
-
+```
    The binding \= "MY\_BROWSER" line is critical. It tells Cloudflare to provide your worker with an object (MY\_BROWSER) that can control a headless browser instance. Your index.ts code already uses this binding.  
-6. Deploy the Worker:  
+7. Deploy the Worker:  
    Publish your worker to the Cloudflare network.  
+```
    wrangler deploy
-
+```
    After deployment, Wrangler will output your worker's URL (e.g., https://cv-generator-worker.your-subdomain.workers.dev). **Copy this URL.**
 
 ### **Step 3: Configure and Deploy the Frontend on Cloudflare Pages**
@@ -98,18 +102,15 @@ The frontend is the index.html file that users will interact with.
 
 1. Update the Worker URL in the Frontend:  
    Open the index.html file and find the fetch call inside the \<script\> tag. Replace the hardcoded URL with the URL of the worker you just deployed.  
+ ```
    // Inside index.html
 
    // Find this line:  
-   const response \= await fetch('\[https://cv-generator-worker.abbasmuzahir92.workers.dev/api/generate\](https://cv-generator-worker.abbasmuzahir92.workers.dev/api/generate)', {  
-       // ...  
-   });
-
    // Replace it with your worker's URL:  
    const response \= await fetch('https://YOUR\_WORKER\_NAME.YOUR\_SUBDOMAIN.workers.dev/api/generate', {  
        // ...  
    });
-
+```
    Save the file after making this change.  
 2. Deploy to Cloudflare Pages:  
    You can deploy your frontend by connecting your GitHub repository to Cloudflare Pages.  
@@ -127,18 +128,17 @@ Cloudflare will deploy your index.html and give you a unique URL (e.g., https://
 To allow your frontend application to make requests to your backend worker, you must update the CORS (Cross-Origin Resource Sharing) settings in the worker code.
 
 1. Edit the Worker Code:  
-   Open your worker's main file (index.ts). Find the CORS\_ORIGIN constant at the top of the file.  
+   Open your worker's main file (index.ts). Find the CORS\_ORIGIN constant at the top of the file.
+   ```
    // Inside index.ts
-
    // Find this line:  
-   const CORS\_ORIGIN \= "\[https://cvgenie.pages.dev\](https://cvgenie.pages.dev)";
-
    // Replace it with your Cloudflare Pages URL:  
    const CORS\_ORIGIN \= "\[https://your-project.pages.dev\](https://your-project.pages.dev)";
-
-2. Re-deploy the Worker:  
+   ```
+3. Re-deploy the Worker:  
    After saving the change, re-deploy your worker for the new CORS policy to take effect.  
    \# From your worker directory  
+```
    wrangler deploy
-
+```
 **Congratulations\!** Your application is now fully deployed and configured. Visit your Cloudflare Pages URL to start using it.
